@@ -156,12 +156,12 @@ char RLEListGet(RLEList list, int index, RLEListResult *result)
 {
     if(list==NULL)
     {
-        result = RLE_LIST_NULL_ARGUMENT;
+        *result = RLE_LIST_NULL_ARGUMENT;
         return 0;
     }
     if(index<0 || index>=RLEListSize(list))
     {
-        result = RLE_LIST_INDEX_OUT_OF_BOUNDS;
+        *result = RLE_LIST_INDEX_OUT_OF_BOUNDS;
         return 0;
     }
     RLEList currentNode = list;
@@ -172,7 +172,7 @@ char RLEListGet(RLEList list, int index, RLEListResult *result)
         assert(currentNodeLength>=0);
         if(index<currentNodeLength)
         {
-            result = RLE_LIST_SUCCESS;
+            *result = RLE_LIST_SUCCESS;
             return currentNode->val;
         }
         index-=currentNodeLength;
