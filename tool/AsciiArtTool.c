@@ -1,18 +1,17 @@
 //
 // Created by omer.bahat on 11/24/22.
 //
-
+#include <assert.h>
+#include <stdlib.h>
 #include "AsciiArtTool.h"
 
-asciiArtPrintEncoded(RLEList list, FILE *out_stream)
+RLEListResult asciiArtPrintEncoded(RLEList list, FILE *out_stream)
 {
     if(list==NULL)
     {
         return RLE_LIST_NULL_ARGUMENT;
     }
-    const char* FOPEN_MODE = "w";
-    FILE* stream = fopen (out_stream, FOPEN_MODE);
-    if(stream==NULL)
+    if(out_stream==NULL)
     {
         return RLE_LIST_NULL_ARGUMENT;
     }
@@ -21,12 +20,10 @@ asciiArtPrintEncoded(RLEList list, FILE *out_stream)
     assert(list!=NULL);
     if(*listExportStatus!=RLE_LIST_SUCCESS)
     {
-        fclose(stream);
         return *listExportStatus;
     }
-    int writeStatus = fputs(encodedString, stream);
+    int writeStatus = fputs(encodedString, out_stream);
     free(encodedString);
-    fclose(stream);
     if(writeStatus==EOF)
     {
         return RLE_LIST_ERROR;
@@ -35,3 +32,12 @@ asciiArtPrintEncoded(RLEList list, FILE *out_stream)
     
 }
 
+RLEList asciiArtRead(FILE* in_stream)
+{
+    return NULL;
+}
+
+RLEListResult asciiArtPrint(RLEList list, FILE *out_stream)
+{
+    return RLE_LIST_SUCCESS;
+}
