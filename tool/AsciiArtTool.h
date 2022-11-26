@@ -7,6 +7,7 @@
 #ifndef HW1_RLELIST_H
 #include "../RLEList.h"
 #endif
+
 /**
  * asciiArtRead: Reads given file and compresses it via RLE technique
  * @param in_stream - FILE* type object which contains the image to be compressed
