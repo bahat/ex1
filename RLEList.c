@@ -1,7 +1,6 @@
 #include "RLEList.h"
 #include <assert.h>
 #include <stdlib.h>
-#include <stdio.h>
 
 struct RLEList_t
 {
@@ -40,7 +39,8 @@ RLEListResult RLEListAppend(RLEList list, char value)
         return RLE_LIST_NULL_ARGUMENT;
     }
     while(list->next!=NULL)
-    {   //gets the last node in list (the end of gevin sentence)
+    {   
+        //gets the last node in list (the end of gevin sentence)
         list=list->next;
     }
     if(list->val==value)
@@ -49,14 +49,24 @@ RLEListResult RLEListAppend(RLEList list, char value)
     }
     else
     {
-       RLEList newList = RLEListCreate();
-       if(newList== NULL)
-       {
+        if(list->val=='\0')
+        { 
+            //if list is empty
+            assert(list->next==NULL);
+            list->val=value;
+            list->length=1;
+        }
+        else
+        {
+        RLEList newList = RLEListCreate();
+        if(newList== NULL)
+        {
             return RLE_LIST_OUT_OF_MEMORY;
-       }
-       list->next= newList;
-       newList->length=1;
-       newList->val=value;
+        }
+        list->next= newList;
+        newList->length=1;
+        newList->val=value;
+        }
     }
     return RLE_LIST_SUCCESS;
 }
@@ -156,12 +166,18 @@ char RLEListGet(RLEList list, int index, RLEListResult *result)
 {
     if(list==NULL)
     {
-        *result = RLE_LIST_NULL_ARGUMENT;
+        if(result!=NULL)
+        {
+            *result = RLE_LIST_NULL_ARGUMENT;
+        }
         return 0;
     }
     if(index<0 || index>=RLEListSize(list))
     {
-        *result = RLE_LIST_INDEX_OUT_OF_BOUNDS;
+        if(result!=NULL)
+        {
+            *result = RLE_LIST_INDEX_OUT_OF_BOUNDS;
+        }
         return 0;
     }
     RLEList currentNode = list;
@@ -172,7 +188,10 @@ char RLEListGet(RLEList list, int index, RLEListResult *result)
         assert(currentNodeLength>=0);
         if(index<currentNodeLength)
         {
-            *result = RLE_LIST_SUCCESS;
+            if(result!=NULL)
+            {
+                *result = RLE_LIST_SUCCESS;
+            }
             return currentNode->val;
         }
         index-=currentNodeLength;
