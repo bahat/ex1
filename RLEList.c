@@ -235,7 +235,7 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function)
     return RLE_LIST_SUCCESS;
 }
 
-typedef char* string;
+
 char* RLEListExportToString(RLEList list, RLEListResult* result)
 {   
     const int CHAR_TO_STRING = 3;
