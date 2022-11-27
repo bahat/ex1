@@ -34,8 +34,8 @@ RLEListResult asciiArtPrintEncoded(RLEList list, FILE *out_stream)
 
 RLEList asciiArtRead(FILE* in_stream)
 {
-    const int LINE_LINGTH=300;
-    char buffer[LINE_LINGTH]="";
+    const int LINE_LENGTH=300;
+    char buffer[LINE_LENGTH]="";
     RLEList newList= RLEListCreate();
     if(!newList)
     {
@@ -55,7 +55,7 @@ RLEList asciiArtRead(FILE* in_stream)
             i++;
         }
 
-        buffer[LINE_LINGTH]="";
+        buffer[LINE_LENGTH]="";
 
     }
    
