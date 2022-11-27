@@ -10,6 +10,41 @@ struct RLEList_t
     RLEList next;
 };
 
+RLEListResult removeNode(RLEList previousNode, RLEList currentNode, RLEList list)
+{
+    /*edge case I- first node shall be removed*/
+    if(previousNode==NULL)
+    {
+        list = list->next;
+        assert(currentNode!=NULL);
+        free(currentNode);
+        currentNode=list;
+        return RLE_LIST_SUCCESS;
+    }
+
+    /*edge case II- last node shall be removed*/
+    if(currentNode->next==NULL)
+    {
+        assert(currentNode!=NULL);
+        free(currentNode);
+        return RLE_LIST_SUCCESS;
+    }
+
+    /*edge case III- node before and after have same value*/
+    if(currentNode->next->val==previousNode->val)
+    {
+        previousNode->length+=currentNode->next->length;
+        previousNode->next=currentNode->next->next;
+        RLEList todelete = currentNode->next;
+        free(todelete);
+        free(currentNode);
+        return RLE_LIST_SUCCESS;
+    }
+    /*normal removal*/
+    previousNode->next=currentNode->next;
+    free(currentNode);
+    return RLE_LIST_SUCCESS;
+}
 RLEList RLEListCreate()
 {
     RLEList tmp=(RLEList)malloc(sizeof(struct RLEList_t));
@@ -19,7 +54,7 @@ RLEList RLEListCreate()
     }
     tmp->next=NULL;
     tmp->length=0;
-    tmp->val='\0';
+    tmp->val=0;
     return tmp;
 }
 
@@ -29,45 +64,42 @@ void RLEListDestroy(RLEList list)
     {
         RLEList toDelete = list;
         list=list->next;
+        assert(toDelete!=NULL);
         free(toDelete);
     }
     
 }
 RLEListResult RLEListAppend(RLEList list, char value)
-{   if(list==NULL)
+{   
+    if(list==NULL)
     {
         return RLE_LIST_NULL_ARGUMENT;
     }
-    while(list->next!=NULL)
-    {   
-        //gets the last node in list (the end of gevin sentence)
-        list=list->next;
-    }
-    if(list->val==value)
+    if(list->val==0)
     {
-        list->length+=1;
+        list->val = value;
+        list->length = 1;
+        return RLE_LIST_SUCCESS;
     }
-    else
+    RLEList lastNode = list;
+    assert(list->val!=0);
+    while(lastNode->next!=NULL)
     {
-        if(list->val=='\0')
-        { 
-            //if list is empty
-            assert(list->next==NULL);
-            list->val=value;
-            list->length=1;
-        }
-        else
-        {
-        RLEList newList = RLEListCreate();
-        if(newList== NULL)
-        {
-            return RLE_LIST_OUT_OF_MEMORY;
-        }
-        list->next= newList;
-        newList->length=1;
-        newList->val=value;
-        }
+        lastNode = lastNode->next;
     }
+    if(lastNode->val==value)
+    {
+        lastNode->length+=1;
+        return RLE_LIST_SUCCESS;
+    }
+    RLEList newNode = RLEListCreate();
+    if(newNode==NULL)
+    {
+        return RLE_LIST_OUT_OF_MEMORY;
+    }
+    newNode->val = value;
+    newNode->length = 1;
+    lastNode->next = newNode;
     return RLE_LIST_SUCCESS;
 }
 
@@ -107,46 +139,16 @@ RLEListResult RLEListRemove(RLEList list, int index){
     }
     RLEList currentNode=list;
     RLEList previousNode = NULL;
-    int currentNodeLength;
     while(currentNode!=NULL)
     {
-        currentNodeLength=currentNode->length;
-        assert(currentNodeLength>=0&&index>=0);
-        if(currentNodeLength>index)
+        assert(currentNode->length>0);
+        assert(index>=0);
+        if(currentNode->length>index)
         {
             //if made it into this loop, the char we want to remove is within the current node :)
-            if(currentNodeLength==MIN_NODE_LENGTH)
+            if(currentNode->length==MIN_NODE_LENGTH)
             {
-                //if the length of the segment of repeating chars represented by current node is 1, we have to remove node
-                //we must check if neighbouring nodes are equal, and if so we must merge them
-                if(previousNode==NULL)
-                {
-                    //edge case- removing first node
-                    list=currentNode->next;
-                    free(currentNode);
-                    return RLE_LIST_SUCCESS;
-                }
-                assert(previousNode!=NULL);
-                if(currentNode->next==NULL)
-                {
-                    //edge case- removing last node
-                    free(currentNode);
-                    return RLE_LIST_SUCCESS;
-                }
-                assert(previousNode!=NULL &&currentNode->next!=NULL);
-                if(previousNode->val==currentNode->next->val)
-                {
-                    //merging and freeing allocation of "waste" nodes
-                    previousNode->next=currentNode->next->next;
-                    previousNode->length+=currentNode->next->length;
-                    free(currentNode->next);
-                    free(currentNode);
-                    return RLE_LIST_SUCCESS;
-                }
-                //simple remove
-                previousNode->next=currentNode->next;
-                free(currentNode);
-                return RLE_LIST_SUCCESS;
+                return removeNode(previousNode,currentNode,list);
             }
             else
             {
@@ -154,7 +156,7 @@ RLEListResult RLEListRemove(RLEList list, int index){
                 return RLE_LIST_SUCCESS;
             }
         }
-        index-=currentNodeLength;
+        index-=currentNode->length;
         previousNode=currentNode;
         currentNode=currentNode->next;
     }
@@ -178,7 +180,7 @@ char RLEListGet(RLEList list, int index, RLEListResult *result)
         {
             *result = RLE_LIST_INDEX_OUT_OF_BOUNDS;
         }
-        return 0;
+        return '\0';
     }
     RLEList currentNode = list;
     int currentNodeLength;
