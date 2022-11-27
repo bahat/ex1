@@ -1,5 +1,6 @@
 //
 // Created by omer.bahat on 11/24/22.
+// and then comes ahmad.fadool did some changes on 11/26-27/22
 //
 #include <assert.h>
 #include <stdlib.h>
@@ -15,7 +16,7 @@ RLEListResult asciiArtPrintEncoded(RLEList list, FILE *out_stream)
     {
         return RLE_LIST_NULL_ARGUMENT;
     }
-    RLEListResult* listExportStatus = (RLEListResult*)RLE_LIST_ERROR;
+    RLEListResult* listExportStatus=RLE_LIST_SUCCESS;
     char* encodedString = RLEListExportToString(list, listExportStatus);
     assert(list!=NULL);
     if(*listExportStatus!=RLE_LIST_SUCCESS)
@@ -33,9 +34,13 @@ RLEListResult asciiArtPrintEncoded(RLEList list, FILE *out_stream)
 }
 
 RLEList asciiArtRead(FILE* in_stream)
-{
-    const int LINE_LENGTH=300;
-    char buffer[LINE_LENGTH]="";
+{   const int LINE_LINGTH=300;
+    char* buffer= malloc(LINE_LINGTH*sizeof(char));
+    if(!buffer)
+    {
+        return NULL;
+    }
+    buffer="";/////////////////////////////////////////////////////////////////
     RLEList newList= RLEListCreate();
     if(!newList)
     {
@@ -55,16 +60,17 @@ RLEList asciiArtRead(FILE* in_stream)
             i++;
         }
 
-        buffer[LINE_LENGTH]="";
+        buffer="";
 
     }
    
     return newList;
+
+   
 }
 
 RLEListResult asciiArtPrint(RLEList list, FILE *out_stream)
-{
-    RLEListResult* result =RLE_LIST_SUCCESS;
+{   RLEListResult* result =RLE_LIST_SUCCESS;
     if(!list)
     {
         return RLE_LIST_NULL_ARGUMENT;
