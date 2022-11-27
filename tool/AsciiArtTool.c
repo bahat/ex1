@@ -15,7 +15,7 @@ RLEListResult asciiArtPrintEncoded(RLEList list, FILE *out_stream)
     {
         return RLE_LIST_NULL_ARGUMENT;
     }
-    char* listExportStatus;
+    RLEListResult* listExportStatus = (RLEListResult*)RLE_LIST_ERROR;
     char* encodedString = RLEListExportToString(list, listExportStatus);
     assert(list!=NULL);
     if(*listExportStatus!=RLE_LIST_SUCCESS)
