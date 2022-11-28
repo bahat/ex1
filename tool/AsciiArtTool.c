@@ -55,6 +55,7 @@ RLEList asciiArtRead(FILE* in_stream)
             if(RLEListAppend(newList,buffer[i])==RLE_LIST_OUT_OF_MEMORY)
             {
                 RLEListDestroy(newList);
+                free(buffer);
                 return NULL;
             }
             i++;
@@ -63,7 +64,7 @@ RLEList asciiArtRead(FILE* in_stream)
         buffer="";
 
     }
-   
+    free(buffer);
     return newList;
 
    
@@ -96,5 +97,9 @@ RLEListResult asciiArtPrint(RLEList list, FILE *out_stream)
     string[size]='\0';
 
     fputs(string,out_stream);
+    if(string!=NULL)
+    {
+        free(string);
+    }
     return RLE_LIST_SUCCESS;
 }
