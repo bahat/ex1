@@ -18,19 +18,19 @@ char invertChar(char val)
 }
 int main(int argc, char** argv)
 {
-    const char* sourceFOpenMode = "r";
-    const char * targetFOpenMode = "w";
+    const char* SOURCE_F_OPEN_MODE = "r";
+    const char * TARGET_F_OPEN_MODE = "w";
     if(argc!=4)
     {
         return 0;
     }
     char* flag = argv[1];
-    FILE* source = fopen(argv[2], sourceFOpenMode);
+    FILE* source = fopen(argv[2], SOURCE_F_OPEN_MODE);
     if(source==NULL)
     {
         return 0;
     }
-    FILE* target = fopen(argv[3], targetFOpenMode);
+    FILE* target = fopen(argv[3], TARGET_F_OPEN_MODE);
     if(target==NULL)
     {
         fclose(source);
@@ -50,7 +50,7 @@ int main(int argc, char** argv)
     fclose(target);
     if(sourceList!=NULL)
     {
-        free(sourceList);
+        RLEListDestroy(sourceList);
     }
     return 0;
 }
