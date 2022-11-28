@@ -25,7 +25,7 @@
 */
 
 
-/** 
+/**
 * Typedef for defining the RLE list.
 * Complete the implementation of struct RLEList_t defined in RLEList.c
 */
@@ -40,8 +40,7 @@ typedef enum {
     RLE_LIST_ERROR
 } RLEListResult;
 
-
-/** 
+/**
  * Type of function for mapping characters.
  * This function should accept a character in the list and return the mapped character
  */
